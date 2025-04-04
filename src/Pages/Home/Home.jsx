@@ -467,28 +467,28 @@ const Home = () => {
 
                 <div 
                   ref={messagesContainerRef}
-                  className="x-scroll flex-1 overflow-y-auto bg-[#000000] p-4"
+                  className="x-scroll flex-1 truncate bg-[#000000] p-4"
                   style={{
                     ...(operatorDirection === '<' ? (windowWidth < 768 ? {
                       height: 'calc(100vh - 70px)',
-                      paddingTop: '60px',
+                      paddingTop: '10px',
                       paddingBottom: '180px',
                     } : {
                       maxHeight: 'calc(100vh - 70px)',
-                      paddingTop: '60px',
+                      paddingTop: '10px',
                       paddingBottom: '180px'
                     }) : (windowWidth > 768 ? {
                       height: 'calc(100vh - 70px)',
-                      paddingTop: '60px',
+                      paddingTop: '10px',
                       paddingBottom: '180px',
                     } : {
                       maxHeight: 'calc(100vh - 70px)',
-                      paddingTop: '60px',
+                      paddingTop: '10px',
                       paddingBottom: '40px'
                     }))
                   }}
                 >
-                  {messages.map((msg) => (
+                  <div className='x-scroll  overflow-y-auto h-full w-full'> {messages.map((msg) => (
                     <div key={msg._id}>
                       {msg.deleted ? (
                         <div className="mb-3 flex justify-center">
@@ -533,7 +533,8 @@ const Home = () => {
                         </div>
                       )}
                     </div>
-                  ))}
+                  ))}</div>
+                 
                 </div>
 
                 {isSelecting ? (
