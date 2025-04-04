@@ -439,7 +439,7 @@ const Home = () => {
           >
             {selectedContact ? (
               <>
-                <div className="fixed top-0 w-full md:w-full md:static bg-[#000000] p-[8px] flex items-center border-b border-[#0c0c0c] z-10">
+                <div className="sticky top-0 w-full md:w-full md:static bg-[#000000] p-[8px] flex items-center border-b border-[#0c0c0c] z-10">
                   <div className="flex items-center">
                     <button 
                       className=" mr-3 text-[#d1d7db]"
