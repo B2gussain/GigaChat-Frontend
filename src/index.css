@@ -96,3 +96,12 @@ body::-webkit-scrollbar{
 .animate-pulse {
   animation: pulse 1.5s ease-in-out infinite; /* Faster pulse */
 }
+
+.chat-messages-container {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.chat-messages-container::-webkit-scrollbar {
+  display: none;
+}

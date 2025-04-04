@@ -36,20 +36,17 @@ const formatTimestamp = (timestamp) => {
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-  }); // e.g., "Oct 28, 2:30 PM"
+  });
 };
 
-// Skeleton Loader Component
 // Skeleton Loader Component
 const SkeletonLoader = () => {
   return (
     <div className="bg-[#000000] min-h-[100vh] flex flex-col">
-      {/* Header Placeholder */}
       <div className="bg-[#0a0a0a] p-4">
-        <div className="h-10 w-1/3 rounded  mx-auto  text-white flex items-center"></div>
+        <div className="h-10 w-1/3 rounded mx-auto text-white flex items-center"></div>
       </div>
       <div className="flex flex-1 flex-col md:flex-row">
-        {/* Sidebar Skeleton */}
         <div className="w-full md:w-1/3 bg-[#000000] border-r border-[#080808] p-4">
           <div className="h-[50px] bg-[#171818] rounded-[40px] animate-pulse mb-4"></div>
           <div className="space-y-4">
@@ -64,39 +61,22 @@ const SkeletonLoader = () => {
             ))}
           </div>
         </div>
-        {/* Chat Area Skeleton */}
         <div className="w-full md:w-2/3 bg-[#000000] p-4 flex flex-col">
-          {/* Chat Header Skeleton */}
           <div className="flex items-center p-2 border-b border-[#0c0c0c]">
             <div className="w-10 h-10 bg-[#171818] rounded-full animate-pulse mr-3"></div>
             <div className="h-6 w-1/4 bg-[#171818] rounded animate-pulse"></div>
           </div>
-          {/* Messages Skeleton */}
           <div className="flex-1 p-4 space-y-4 overflow-y-auto">
             {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className={`flex   ${
-                  i % 2 === 0 ? 'justify-start' : 'justify-end'
-                }`}
-              >
-                <div className="flex  items-center">
-                 
-                  <div
-                    className={`h-[25px] ${
-                      i % 2 === 0 ? 'w-[150px]' : 'w-[150px]'
-                    } bg-[#171818] rounded-lg animate-pulse`}
-                  ></div>
-                  
+              <div key={i} className={`flex ${i % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
+                <div className="flex items-center">
+                  <div className={`h-[25px] ${i % 2 === 0 ? 'w-[150px]' : 'w-[150px]'} bg-[#171818] rounded-lg animate-pulse`}></div>
                 </div>
               </div>
             ))}
           </div>
-         
-         
         </div>
       </div>
-      {/* Navbar Placeholder */}
       <Navbar />
     </div>
   );
@@ -117,7 +97,15 @@ const Home = () => {
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedMessages, setSelectedMessages] = useState([]);
   const [showConfirm, setShowConfirm] = useState(false);
-  const messagesEndRef = useRef(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth); // Track window width
+  const messagesContainerRef = useRef(null);
+
+  // Update window width on resize
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -274,10 +262,6 @@ const Home = () => {
     };
   }, [selectedContact, user, contacts, filteredContacts]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !selectedContact || !user) return;
@@ -359,6 +343,9 @@ const Home = () => {
     return contact.contacts && contact.contacts.includes(user?._id);
   };
 
+  // Determine operator direction based on windowWidth
+  const operatorDirection = windowWidth > 768 ? '<' : '>';
+
   if (loading) {
     return <SkeletonLoader />;
   }
@@ -377,7 +364,7 @@ const Home = () => {
           <Navbar />
         </>
       )}
-      <div className={`${window.innerWidth < 768 && !selectedContact ? 'pt-[70px]' : 'pt-0 md:pt-[70px]'} bg-[#000000] min-h-[100vh] flex flex-col`}>
+      <div className={`${window.innerWidth < 768 && !selectedContact ? 'pt-[70px]' : 'pt-0 md:pt-[70px]'} bg-[#000000] overflow-y-hidden h-[100vh] flex flex-col`}>
         <div className="flex flex-1 flex-col md:flex-row">
           <div 
             className={`w-full md:w-1/3 bg-[#000000] text-[#d1d7db] border-r border-[#080808] ${
@@ -400,8 +387,8 @@ const Home = () => {
               className="x-scroll overflow-x-hidden overflow-y-auto" 
               style={
                 window.innerWidth < 768 
-                  ? { height: 'calc(100vh - 200px)', paddingBottom: '60px' }
-                  : { maxHeight: 'calc(100vh - 200px)', paddingBottom: '20px' }
+                  ? { height: 'calc(100vh - 130px)', paddingBottom: '80px' }
+                  : { maxHeight: 'calc(100vh - 130px)', paddingBottom: '70px' }
               }
             >
               {filteredContacts.length === 0 && searchQuery === '' ? (
@@ -455,7 +442,7 @@ const Home = () => {
                 <div className="fixed top-0 w-full md:w-full md:static bg-[#000000] p-[8px] flex items-center border-b border-[#0c0c0c] z-10">
                   <div className="flex items-center">
                     <button 
-                      className="md:hidden mr-3 text-[#d1d7db]"
+                      className=" mr-3 text-[#d1d7db]"
                       onClick={handleBackToSidebar}
                     >
                       <FaArrowLeft />
@@ -479,8 +466,27 @@ const Home = () => {
                 </div>
 
                 <div 
-                  className="x-scroll flex-1 p-4 bg-[#000000] overflow-y-auto md:max-h-[calc(100vh-250px)]" 
-                  style={window.innerWidth < 768 ? { paddingTop: '60px', paddingBottom: '80px' } : {}}
+                  ref={messagesContainerRef}
+                  className="x-scroll flex-1 overflow-y-auto bg-[#000000] p-4"
+                  style={{
+                    ...(operatorDirection === '<' ? (windowWidth < 768 ? {
+                      height: 'calc(100vh - 70px)',
+                      paddingTop: '60px',
+                      paddingBottom: '180px',
+                    } : {
+                      maxHeight: 'calc(100vh - 70px)',
+                      paddingTop: '60px',
+                      paddingBottom: '180px'
+                    }) : (windowWidth > 768 ? {
+                      height: 'calc(100vh - 70px)',
+                      paddingTop: '60px',
+                      paddingBottom: '180px',
+                    } : {
+                      maxHeight: 'calc(100vh - 70px)',
+                      paddingTop: '60px',
+                      paddingBottom: '40px'
+                    }))
+                  }}
                 >
                   {messages.map((msg) => (
                     <div key={msg._id}>
@@ -502,7 +508,7 @@ const Home = () => {
                         >
                           <div className="flex items-center">
                             <div
-                              className={`max-w-[100%] px-3 py-1 rounded-lg flex items-center ${
+                              className={`max-w-[100%] px-3 min-w-[115px] py-1 rounded-lg flex items-center ${
                                 msg.senderId === user?._id
                                   ? 'bg-[#27cc6181] text-[#d1d7db]'
                                   : 'bg-[#323333] text-[#d1d7db]'
@@ -528,11 +534,10 @@ const Home = () => {
                       )}
                     </div>
                   ))}
-                  <div ref={messagesEndRef} />
                 </div>
 
                 {isSelecting ? (
-                  <div className="fixed bottom-0 w-full md:w-full md:static bg-[#0a0a0a] p-4 flex justify-end items-center md:mb-[60px] z-10">
+                  <div className="fixed bottom-0 md:bottom-[60px] w-full md:w-2/3 bg-[#0a0a0a] p-4 flex justify-end items-center z-10">
                     <button
                       onClick={() => setShowConfirm(true)}
                       className={`bg-[#ff4d4f] p-2 rounded-full text-[#ffffff] hover:bg-[#ff6666] ${
@@ -546,7 +551,7 @@ const Home = () => {
                 ) : (
                   <form 
                     onSubmit={handleSendMessage} 
-                    className="fixed bottom-0 w-full md:w-full md:static bg-[#0a0a0a] p-4 flex items-center md:mb-[60px] z-10"
+                    className="fixed bottom-0 md:bottom-[60px] w-full md:w-2/3 bg-[#0a0a0a] p-4 flex items-center z-10"
                   >
                     <input
                       type="text"
