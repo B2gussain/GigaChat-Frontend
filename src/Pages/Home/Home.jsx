@@ -488,7 +488,7 @@ const Home = () => {
                     }))
                   }}
                 >
-                  <div className='x-scroll  overflow-y-auto h-full w-full'> {messages.map((msg) => (
+                  <div className='x-scroll  overflow-y-scroll h-full w-full'> {messages.map((msg) => (
                     <div key={msg._id}>
                       {msg.deleted ? (
                         <div className="mb-3 flex justify-center">
